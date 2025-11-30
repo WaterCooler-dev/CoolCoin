@@ -3,7 +3,8 @@ package dev.watercooler.coolcoin.Transaction;
 import dev.watercooler.coolcoin.BlockChain;
 import dev.watercooler.coolcoin.Utility.HashUtil;
 
-import java.security.*;
+import java.security.PrivateKey;
+import java.security.PublicKey;
 import java.util.ArrayList;
 
 public class Transaction {
