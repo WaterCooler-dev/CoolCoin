@@ -24,7 +24,6 @@ public class MerkleRoot {
             previousTreeLayer = treeLayer;
         }
 
-        String merkleRoot = (treeLayer.size() == 1) ? treeLayer.get(0) : "";
-        return merkleRoot;
+        return (treeLayer.size() == 1) ? treeLayer.getFirst() : "";
     }
 }
