@@ -6,11 +6,16 @@ import dev.watercooler.coolcoin.Utility.HashUtil;
 import java.security.PrivateKey;
 import java.security.PublicKey;
 import java.util.ArrayList;
+import java.util.Base64;
 
 public class Transaction {
     public String transactionId;
-    public PublicKey sender;
-    public PublicKey recipient;
+    public transient PublicKey sender;
+    public transient PublicKey recipient;
+
+    public String senderKey;
+    public String recipientKey;
+
     public float value;
     public byte[] signature;
 
@@ -24,6 +29,9 @@ public class Transaction {
         this.recipient = to;
         this.value = value;
         this.inputs = inputs;
+
+        this.senderKey = Base64.getEncoder().encodeToString(sender.getEncoded());
+        this.recipientKey = Base64.getEncoder().encodeToString(recipient.getEncoded());
     }
 
     private String calculateHash() {
