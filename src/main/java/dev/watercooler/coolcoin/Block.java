@@ -6,6 +6,7 @@ import dev.watercooler.coolcoin.Utility.MerkleRoot;
 
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.Objects;
 
 public class Block {
     public String hash;
