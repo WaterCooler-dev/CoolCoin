@@ -6,6 +6,7 @@ import dev.watercooler.coolcoin.Transaction.TransactionOutput;
 
 import java.security.Security;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 
 public class BlockChain {
@@ -26,6 +27,7 @@ public class BlockChain {
         walletA = new Wallet();
         walletB = new Wallet();
         Wallet coinbase = new Wallet();
+        System.out.println(coinbase.publicKey.toString());
 
         //create genesis transaction, which sends 100 NoobCoin to walletA:
         genesisTransaction = new Transaction(coinbase.publicKey, walletA.publicKey, 100f, null);
@@ -61,11 +63,10 @@ public class BlockChain {
         System.out.println("\nWalletA's balance is: " + walletA.getBalance());
         System.out.println("WalletB's balance is: " + walletB.getBalance());
 
-        isChainValid();
-
+        System.out.println(isChainValid(blockchain));
     }
 
-    public static Boolean isChainValid() {
+    public static Boolean isChainValid(ArrayList<Block> blockchain) {
         Block currentBlock;
         Block previousBlock;
         String hashTarget = new String(new char[difficulty]).replace('\0', '0');
