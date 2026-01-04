@@ -57,7 +57,7 @@ public class BlockChain {
 
         Block block3 = new Block(block2.hash);
         System.out.println("\nWalletB is Attempting to send funds (20) to WalletA...");
-        block3.addTransaction(walletB.sendFunds( walletA.publicKey, 20));
+        block3.addTransaction(walletB.sendFunds(walletA.publicKey, 20));
         System.out.println("\nWalletA's balance is: " + walletA.getBalance());
         System.out.println("WalletB's balance is: " + walletB.getBalance());
 
