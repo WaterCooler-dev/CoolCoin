@@ -16,6 +16,10 @@ public class P2PServer implements Runnable{
         this.port = port;
     }
 
+    P2PServer() {
+        this.port = 8080;
+    }
+
     @Override
     public void run() {
         EventLoopGroup bossGroup = new NioEventLoopGroup(); // (1)
