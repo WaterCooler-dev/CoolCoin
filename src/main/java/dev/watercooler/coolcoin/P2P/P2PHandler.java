@@ -1,25 +1,24 @@
 package dev.watercooler.coolcoin.P2P;
 
-import io.netty.buffer.ByteBuf;
-import io.netty.buffer.Unpooled;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
-import io.netty.util.CharsetUtil;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-public class P2PHandler extends SimpleChannelInboundHandler<ByteBuf> {
+public class P2PHandler extends SimpleChannelInboundHandler<P2PMessage> {
     @Override
-    protected void messageReceived(ChannelHandlerContext ctx, ByteBuf byteBuf) {
+    protected void messageReceived(ChannelHandlerContext ctx, P2PMessage message) {
         log.debug("P2P를 통해 특정 값을 전달받음");
-        String context = byteBuf.toString(CharsetUtil.UTF_8);
-        ctx.writeAndFlush(Unpooled.copiedBuffer("값 받음" + context, CharsetUtil.UTF_8));
+        log.debug("명령 해더: {}, 값: {}", message.getMessageCommand(), message.getMessageBody());
+
+        P2PMessage context = new P2PMessage(message.getMessageCommand(), "메세지 받음: " + message.getMessageBody());
+        ctx.writeAndFlush(context);
         ctx.close();
     }
 
     @Override
     public void exceptionCaught(ChannelHandlerContext ctx, Throwable cause) { // (4)
-        log.error("P2P 핸들러 에러 발생", cause);
+        log.error(cause.getMessage(), cause);
         ctx.close();
     }
 }
