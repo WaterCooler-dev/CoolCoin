@@ -35,11 +35,14 @@ public class P2PTestClient {
             });
 
             ChannelFuture f = b.connect(host, port).sync();
-            f.channel().writeAndFlush(new P2PMessage(P2PMessageType.TRANSACTION_CREATED, "대충 트랜잭션 만들었어용"));
-
-            if (f.isSuccess()) {
-                log.debug("메세지 보냄");
-            }
+            f.channel().writeAndFlush(new P2PMessage(P2PMessageType.TRANSACTION_CREATED, "대충 트랜잭션 만들었어용"))
+                .addListener((ChannelFutureListener) future -> {
+                    if (!future.isSuccess()) {
+                        log.error("메세지 전송 실패", future.cause());
+                    } else {
+                        log.debug("메세지 보냄");
+                    }
+                });
 
             f.channel().closeFuture().sync();
         } catch (Exception e) {
