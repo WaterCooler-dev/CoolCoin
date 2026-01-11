@@ -8,10 +8,12 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.SocketChannel;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
-import lombok.extern.slf4j.Slf4j;
+import io.netty.handler.codec.LengthFieldBasedFrameDecoder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-@Slf4j
 public class P2PServer implements Runnable{
+    private static final Logger log = LoggerFactory.getLogger(P2PServer.class);
     private final int port;
 
     public P2PServer(int port) {
@@ -24,15 +26,20 @@ public class P2PServer implements Runnable{
 
     @Override
     public void run() {
+        log.info("P2P 서버 실행중...");
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
             ServerBootstrap b = new ServerBootstrap();
+
             b.group(bossGroup, workerGroup)
                     .channel(NioServerSocketChannel.class)
                     .childHandler(new ChannelInitializer<SocketChannel>() {
                         @Override
-                        public void initChannel(SocketChannel ch) throws Exception {
+                        public void initChannel(SocketChannel ch) {
+                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024 * 1024, 5, 4, 0, 0));
+                            ch.pipeline().addLast(new P2PMessageDecoder());
+                            ch.pipeline().addLast(new P2PMessageEncoder());
                             ch.pipeline().addLast(new P2PHandler());
                         }
                     })
@@ -40,11 +47,13 @@ public class P2PServer implements Runnable{
                     .childOption(ChannelOption.SO_KEEPALIVE, true);
 
             ChannelFuture f = b.bind(this.port).sync();
-            log.info("p2p 서버가 {}에서 성공적으로 실행됨", this.port);
+            log.info("P2P 서버가 {}에서 성공적으로 실행됨", this.port);
             f.channel().closeFuture().sync();
-        } catch (InterruptedException e) {
+        }
+        catch (InterruptedException e) {
             throw new RuntimeException(e);
-        } finally {
+        }
+        finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
             log.info("p2p 서버가 성공적으로 종료됨");
