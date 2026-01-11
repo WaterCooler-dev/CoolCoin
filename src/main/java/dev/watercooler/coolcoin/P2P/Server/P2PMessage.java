@@ -1,4 +1,4 @@
-package dev.watercooler.coolcoin.P2P;
+package dev.watercooler.coolcoin.P2P.Server;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
