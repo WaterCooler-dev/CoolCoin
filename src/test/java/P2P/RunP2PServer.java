@@ -6,6 +6,6 @@ public class RunP2PServer {
     public static void main(String[] args) {
         Thread thread = new Thread(new P2PServer());
         thread.setName("CoolCoinP2PServer");
-        thread.run();
+        thread.start();
     }
 }
