@@ -1,6 +1,6 @@
-package P2P;
+package P2PLegacy;
 
-import dev.watercooler.coolcoin.P2P.Server.P2PServer;
+import dev.watercooler.coolcoin.P2PLegacy.Server.P2PServer;
 
 public class RunP2PServer {
     public static void main(String[] args) {

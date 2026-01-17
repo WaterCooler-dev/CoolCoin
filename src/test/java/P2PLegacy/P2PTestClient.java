@@ -1,9 +1,9 @@
-package P2P;
+package P2PLegacy;
 
-import dev.watercooler.coolcoin.P2P.Server.P2PMessage;
-import dev.watercooler.coolcoin.P2P.Server.P2PMessageDecoder;
-import dev.watercooler.coolcoin.P2P.Server.P2PMessageEncoder;
-import dev.watercooler.coolcoin.P2P.Server.P2PMessageType;
+import dev.watercooler.coolcoin.P2PLegacy.Server.P2PMessage;
+import dev.watercooler.coolcoin.P2PLegacy.Server.P2PMessageDecoder;
+import dev.watercooler.coolcoin.P2PLegacy.Server.P2PMessageEncoder;
+import dev.watercooler.coolcoin.P2PLegacy.Server.P2PMessageType;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;

@@ -1,4 +1,4 @@
-package dev.watercooler.coolcoin.P2P.Server;
+package dev.watercooler.coolcoin.P2PLegacy.Server;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;

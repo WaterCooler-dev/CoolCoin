@@ -1,4 +1,4 @@
-package dev.watercooler.coolcoin.P2P.Server;
+package dev.watercooler.coolcoin.P2P;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;

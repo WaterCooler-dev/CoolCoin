@@ -1,4 +1,4 @@
-package dev.watercooler.coolcoin.P2P;
+package dev.watercooler.coolcoin.P2PLegacy;
 
 import lombok.Getter;
 

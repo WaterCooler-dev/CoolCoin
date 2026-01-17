@@ -1,8 +1,8 @@
-package dev.watercooler.coolcoin.P2P.Client;
+package dev.watercooler.coolcoin.P2PLegacy.Client;
 
-import dev.watercooler.coolcoin.P2P.P2PNode;
-import dev.watercooler.coolcoin.P2P.P2PNodeList;
-import dev.watercooler.coolcoin.P2P.Server.*;
+import dev.watercooler.coolcoin.P2PLegacy.P2PNode;
+import dev.watercooler.coolcoin.P2PLegacy.P2PNodeList;
+import dev.watercooler.coolcoin.P2PLegacy.Server.*;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.channel.*;
 import io.netty.channel.nio.NioEventLoopGroup;
