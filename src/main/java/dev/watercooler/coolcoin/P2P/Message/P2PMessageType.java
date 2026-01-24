@@ -1,4 +1,4 @@
-package dev.watercooler.coolcoin.P2P;
+package dev.watercooler.coolcoin.P2P.Message;
 
 import lombok.Getter;
 
@@ -7,10 +7,11 @@ public enum P2PMessageType {
     HANDSHAKE_VERSION((byte)0x01),
     HANDSHAKE_VERACK((byte)0x02),
     HEARTBEAT_PING((byte)0x03),
-    HEARTBEAT_PONG((byte)0x04);
-//    TRANSACTION_CREATED((byte) 0x02),
-//    BLOCK_MINED((byte) 0x03),
-//    CHAIN_SYNC_REQUEST((byte) 0x04);
+    HEARTBEAT_PONG((byte)0x04),
+    TRANSACTION_CREATED((byte) 0x05),
+    BLOCK_MINED((byte) 0x06),
+    BLOCK((byte) 0x07),
+    TEST((byte) 0x99);
 
     private final byte value;
 

@@ -1,5 +1,7 @@
 package dev.watercooler.coolcoin.P2P;
 
+import dev.watercooler.coolcoin.P2P.Message.P2PMessage;
+import dev.watercooler.coolcoin.P2P.Message.P2PMessageType;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.SimpleChannelInboundHandler;
 import io.netty.handler.timeout.IdleState;
