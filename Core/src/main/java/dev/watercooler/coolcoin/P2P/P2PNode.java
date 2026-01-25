@@ -1,5 +1,7 @@
 package dev.watercooler.coolcoin.P2P;
 
+import dev.watercooler.coolcoin.P2P.Message.P2PMessageDecoder;
+import dev.watercooler.coolcoin.P2P.Message.P2PMessageEncoder;
 import io.netty.bootstrap.Bootstrap;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.ChannelFuture;
@@ -15,7 +17,7 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class P2PNode extends Thread{
+public class P2PNode extends Thread {
     private static final Logger log = LoggerFactory.getLogger(P2PNode.class);
     private final int port;
 
@@ -44,6 +46,7 @@ public class P2PNode extends Thread{
                             ch.pipeline().addLast(new P2PMessageDecoder());
                             ch.pipeline().addLast(new P2PMessageEncoder());
                             ch.pipeline().addLast(new P2PNodeHandler());
+                            ch.pipeline().addLast(new P2PGossipHandler());
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
