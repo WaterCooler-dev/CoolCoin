@@ -25,3 +25,7 @@ dependencies {
 tasks.test {
     useJUnitPlatform()
 }
+
+tasks.withType<JavaCompile> {
+    options.compilerArgs.addAll(listOf("--module-path", classpath.asPath))
+}
