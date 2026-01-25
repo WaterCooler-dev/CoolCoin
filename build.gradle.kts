@@ -39,6 +39,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter-api:${junitVersion}")
     testRuntimeOnly("org.junit.jupiter:junit-jupiter-engine:${junitVersion}")
 
+    implementation(project(":dev.watercooler.coolcoin.core"))
+
     implementation("com.google.code.gson:gson:2.13.2")
     implementation("org.bouncycastle:bcprov-jdk18on:1.83")
     implementation("io.netty:netty-all:5.0.0.Alpha2")
