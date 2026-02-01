@@ -1,5 +1,6 @@
 package dev.watercooler.coolcoin.P2P;
 
+import dev.watercooler.coolcoin.P2P.Message.P2PMessage;
 import dev.watercooler.coolcoin.P2P.Message.P2PMessageDecoder;
 import dev.watercooler.coolcoin.P2P.Message.P2PMessageEncoder;
 import io.netty.bootstrap.Bootstrap;
@@ -17,15 +18,21 @@ import io.netty.handler.timeout.IdleStateHandler;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
+
 public class P2PNode extends Thread {
     private static final Logger log = LoggerFactory.getLogger(P2PNode.class);
     private final int port;
+    private final BlockingQueue<P2PMessage> taskQueue = new LinkedBlockingQueue<>();
+    private final MessageDeduplicator deduplicator;
 
     public P2PNode(int port){
         this.port = port;
+        deduplicator = new MessageDeduplicator();
     }
     public P2PNode() {
-        this.port = 21232;
+        this(21232);
     }
 
     @Override
@@ -46,7 +53,7 @@ public class P2PNode extends Thread {
                             ch.pipeline().addLast(new P2PMessageDecoder());
                             ch.pipeline().addLast(new P2PMessageEncoder());
                             ch.pipeline().addLast(new P2PNodeHandler());
-                            ch.pipeline().addLast(new P2PGossipHandler());
+                            ch.pipeline().addLast(new P2PGossipHandler(deduplicator));
                         }
                     })
                     .option(ChannelOption.SO_BACKLOG, 128)
@@ -81,16 +88,31 @@ public class P2PNode extends Thread {
                             ch.pipeline().addLast(new P2PMessageDecoder());
                             ch.pipeline().addLast(new P2PMessageEncoder());
                             ch.pipeline().addLast(new P2PNodeHandler());
+                            ch.pipeline().addLast(new P2PGossipHandler(deduplicator));
                         }
                     });
 
             ChannelFuture f = b.connect(host, port).sync();
+
+            while(!Thread.currentThread().isInterrupted()){
+                P2PMessage msg = taskQueue.take();
+                deduplicator.markAsSeen(msg);
+                P2PGroupManager.broadcastAll(msg);
+                log.info("메세지 네트워크 전파 시작");
+            }
+
             f.channel().closeFuture().sync();
 
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         } finally {
             group.shutdownGracefully();
         }
+    }
+
+    public void addTask(P2PMessage message) throws InterruptedException {
+        taskQueue.put(message);
     }
 }

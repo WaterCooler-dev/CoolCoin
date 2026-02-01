@@ -18,8 +18,10 @@ public class P2PGroupManager {
     }
 
     public static void broadcast(Object message, Channel sender) {
-        peers.writeAndFlush(message, channel -> {
-            return channel != sender;
-        });
+        peers.writeAndFlush(message, channel -> channel != sender);
+    }
+
+    public static void broadcastAll(Object message) {
+        peers.writeAndFlush(message);
     }
 }

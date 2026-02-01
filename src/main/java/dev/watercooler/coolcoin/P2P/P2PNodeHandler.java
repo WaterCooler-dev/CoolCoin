@@ -36,6 +36,8 @@ public class P2PNodeHandler extends SimpleChannelInboundHandler<P2PMessage> {
                 ctx.writeAndFlush(new P2PMessage(P2PMessageType.HEARTBEAT_PONG, msg.getMessageBody()));
                 break;
         }
+
+        ctx.fireChannelRead(msg);
     }
 
     @Override

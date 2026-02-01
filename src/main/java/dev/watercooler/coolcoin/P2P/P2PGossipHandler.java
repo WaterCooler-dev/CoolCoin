@@ -9,7 +9,11 @@ import org.slf4j.LoggerFactory;
 
 public class P2PGossipHandler extends SimpleChannelInboundHandler<P2PMessage> {
     private static final Logger log = LoggerFactory.getLogger(P2PGossipHandler.class);
-    private final MessageDeduplicator deduplicator = new MessageDeduplicator();
+    private final MessageDeduplicator deduplicator;
+
+    P2PGossipHandler(MessageDeduplicator deduplicator) {
+        this.deduplicator = deduplicator;
+    }
 
     @Override
     public void channelActive(ChannelHandlerContext ctx) throws Exception {
@@ -19,12 +23,11 @@ public class P2PGossipHandler extends SimpleChannelInboundHandler<P2PMessage> {
 
     @Override
     protected void messageReceived(ChannelHandlerContext ctx, P2PMessage msg) throws Exception {
-        String msgHash = HashUtil.applySha256(msg.getMessageBody());
-        if (deduplicator.isAlreadySeen(msgHash)) {
+        if (deduplicator.isAlreadySeen(msg)) {
             return;
         }
 
-        deduplicator.markAsSeen(msgHash);
+        deduplicator.markAsSeen(msg);
         P2PGroupManager.broadcast(msg, ctx.channel());
     }
 
