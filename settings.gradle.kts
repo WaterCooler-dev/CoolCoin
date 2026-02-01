@@ -1,2 +1,1 @@
-rootProject.name = "CoolCoinGUI"
-include("dev.watercooler.coolcoin.core")
+rootProject.name = "CoolCoin"

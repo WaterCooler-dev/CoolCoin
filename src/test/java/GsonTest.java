@@ -1,9 +1,12 @@
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import dev.watercooler.coolcoin.BlockChain;
 import dev.watercooler.coolcoin.Transaction.Transaction;
 import dev.watercooler.coolcoin.Wallet;
 
 import java.security.KeyFactory;
+import java.security.NoSuchAlgorithmException;
+import java.security.NoSuchProviderException;
 import java.security.Security;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
