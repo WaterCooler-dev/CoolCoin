@@ -30,10 +30,14 @@ public class P2PNodeHandler extends SimpleChannelInboundHandler<P2PMessage> {
                 break;
             case HANDSHAKE_VERACK:
                 log.info("성공적으로 핸드쉐이크 완료됨.");
+                P2PGroupManager.addPeer(ctx.channel());
                 break;
             case HEARTBEAT_PING:
                 log.info("Ping 수신됨. Pong 전송...");
                 ctx.writeAndFlush(new P2PMessage(P2PMessageType.HEARTBEAT_PONG, msg.getMessageBody()));
+                break;
+            case TEST:
+                log.info("테스트 메세지 수신");
                 break;
         }
 

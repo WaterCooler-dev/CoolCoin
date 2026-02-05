@@ -26,6 +26,7 @@ public class P2PNode extends Thread {
     private final int port;
     private final BlockingQueue<P2PMessage> taskQueue = new LinkedBlockingQueue<>();
     private final MessageDeduplicator deduplicator;
+    private final EventLoopGroup clientGroup = new NioEventLoopGroup();
 
     public P2PNode(int port){
         this.port = port;
@@ -38,6 +39,8 @@ public class P2PNode extends Thread {
     @Override
     public void run() {
         log.info("P2P 노드를 실행시키는 중...");
+        new Thread(this::processTasks).start();
+
         EventLoopGroup bossGroup = new NioEventLoopGroup();
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         try {
@@ -70,21 +73,36 @@ public class P2PNode extends Thread {
         } finally {
             workerGroup.shutdownGracefully();
             bossGroup.shutdownGracefully();
+            clientGroup.shutdownGracefully();
             log.info("p2p 노드가 성공적으로 종료됨");
+        }
+    }
+
+    private void processTasks() {
+        try {
+            while(!Thread.currentThread().isInterrupted()){
+                log.info("태스크 추가됨");
+                P2PMessage msg = taskQueue.take();
+                deduplicator.markAsSeen(msg);
+                P2PGroupManager.broadcastAll(msg);
+                log.info("메세지 네트워크 전파 시작");
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
         }
     }
 
     public void connectToPeer(String host, int port) {
         log.info("{}:{} 노드에 연결중...", host, port);
-        EventLoopGroup group = new NioEventLoopGroup();
         try {
             Bootstrap b = new Bootstrap();
-            b.group(group)
+            b.group(clientGroup)
                     .channel(NioSocketChannel.class)
                     .handler(new ChannelInitializer<SocketChannel>() {
                         @Override
                         protected void initChannel(SocketChannel ch) {
                             ch.pipeline().addLast(new IdleStateHandler(0, 30, 0));
+                            ch.pipeline().addLast(new LengthFieldBasedFrameDecoder(1024 * 1024, 5, 4, 0, 0));
                             ch.pipeline().addLast(new P2PMessageDecoder());
                             ch.pipeline().addLast(new P2PMessageEncoder());
                             ch.pipeline().addLast(new P2PNodeHandler());
@@ -92,23 +110,12 @@ public class P2PNode extends Thread {
                         }
                     });
 
-            ChannelFuture f = b.connect(host, port).sync();
-
-            while(!Thread.currentThread().isInterrupted()){
-                P2PMessage msg = taskQueue.take();
-                deduplicator.markAsSeen(msg);
-                P2PGroupManager.broadcastAll(msg);
-                log.info("메세지 네트워크 전파 시작");
-            }
-
-            f.channel().closeFuture().sync();
+            b.connect(host, port).sync();
 
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
-        } finally {
-            group.shutdownGracefully();
         }
     }
 

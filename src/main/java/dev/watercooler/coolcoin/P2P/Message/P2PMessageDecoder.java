@@ -10,7 +10,7 @@ import java.util.List;
 public class P2PMessageDecoder extends ByteToMessageDecoder {
     @Override
     protected void decode(ChannelHandlerContext ctx, ByteBuf in, List<Object> out) {
-        if (in.readableBytes() < 7) return;
+        if (in.readableBytes() < 9) return;
 
         in.markReaderIndex();
         int magic = in.readInt();
